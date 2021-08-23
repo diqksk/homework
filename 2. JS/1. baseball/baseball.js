@@ -2,9 +2,29 @@ const $userNum = document.getElementById("userNumInput");
 const $submitBtn = document.getElementById("submitBtn");
 const $generateBtn = document.getElementById("generateBtn");
 const $modalContainer = document.getElementById("modalContainer");
+const $soloBtn = document.getElementById("soloBtn");
+const $comBtn= document.getElementById("comBtn");
 const realArr=[];
 const userNumList=[];
+const comAnswer=[];
+const comTempAnswer=[...Array(10).keys()];
 let count;
+let flag = false;
+let selectedNum = "";
+
+
+$soloBtn.addEventListener("click",()=>{
+    flag = false;
+    $soloBtn.style.background="#c3c3c3";
+    $comBtn.style.background="#f0f0f0";
+});
+
+$comBtn.addEventListener("click",()=>{
+    flag = true;
+    $comBtn.style.background="#c3c3c3";
+    $soloBtn.style.background="#f0f0f0";
+
+});
 
 $generateBtn.addEventListener('click',()=>{
     count = 1;
@@ -76,11 +96,17 @@ const fadeOut = ()=>{
 }
 
 const startGame = ()=>{
+    
+    if(flag === true){
+        $userNum.placeholder="설정할 3자리 숫자를 입력해주세요";
+    }
+
     document.getElementById("ranNum").style.display="none";
     document.getElementById("userNum").style.display="block";
     document.getElementById("resultList").innerHTML="";
     document.getElementById("counter").innerText="";
     document.getElementById("ballCounter").innerText="";
+    
 }
 
 const restartGame = ()=>{
@@ -109,14 +135,17 @@ const judgeValues = ()=>{
         return;
     }
 
-    for(let i = 0 ; i<strArr.length ; i++){     
-       
-        for(let j = 0 ; j < realArr.length ; j++){
-            if(strArr[i] === realArr[j])  i === j ? result.strike++ : result.ball++;
-        }// end of for loop
-    }// end of for loop
+    if(flag === true && selectedNum === ""){
+        selectedNum = $userNum.value;
+        $userNum.value="";
+        $userNum.placeholder="3자리 숫자를 입력해 주세요";
+        return;    
+    }
+
+    calculateResult(strArr,result);
 
     userNumList.push($userNum.value);
+
 
     document.getElementById("ballCounter").innerText=`🔵Strike : ${result.strike} / 🔴Ball : ${result.ball}`
     document.getElementById("counter").innerText=`${count}회차`
@@ -132,7 +161,6 @@ const judgeValues = ()=>{
                 + document.getElementById("resultList").innerHTML;
     
     count++
-    
     if(result.strike===3){
         fadeIn('게임에서 승리하셨습니다!🎉');
         restartGame();
@@ -143,4 +171,38 @@ const judgeValues = ()=>{
     }
 
     $userNum.value="";
+
+    judgeUserNumber();
+
+}
+
+const calculateResult = (numArr,result) =>{
+    for(let i = 0 ; i<numArr.length ; i++){     
+       
+        for(let j = 0 ; j < realArr.length ; j++){
+            if(numArr[i] === realArr[j])  i === j ? result.strike++ : result.ball++;
+        }// end of for loop
+    }// end of for loop
+}
+
+const judgeUserNumber = () => {
+    const result = {strike:0,ball:0};
+    if(count === 2 ){
+        comAnswer.push([1,2,3]);
+    }
+    
+    calculateResult(comAnswer,result);
+
+    if(result.strike === 0 && result.ball === 0 ){
+        for(let i = 0 ; i < 3 ; i++){
+            comTempAnswer.splice(comTempAnswer.indexOf(comAnswer[comAnswer.length-1][i]));
+            console.log(comAnswer[comAnswer.length-1][i]);
+        }
+    }
+    
+
+    console.log(result);
+    
+
+
 }

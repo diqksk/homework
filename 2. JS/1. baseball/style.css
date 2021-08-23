@@ -88,3 +88,28 @@
 input:focus{
     outline:none;
 }
+.btnContainer{
+    display: flex;
+    justify-content: center;
+    padding:10px;
+}
+.modeBtn{
+    display: flex;
+    justify-content: center;
+    background: #f0f0f0;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 5px;
+    border:1px solid #c3c3c3;
+}
+.modeBtn div{
+    padding: 3px 5px;
+}
+.modeBtn div:hover{
+    background: #c3c3c3;
+    cursor: pointer;
+}
+.modeBtn> div:first-child{
+    border-right: 1px solid #c3c3c3;
+    background: #c3c3c3;
+}
