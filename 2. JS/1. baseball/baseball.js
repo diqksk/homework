@@ -23,6 +23,7 @@ $userNum.addEventListener("keydown",function(e){
     }else if($userNum.value.length===0 && key===48){
         fadeIn("첫번째는 0이 올 수 없습니다.");
     }
+    
 });
 
 $modalContainer.addEventListener("click",()=>{
@@ -51,6 +52,14 @@ const generateNumber = ()=>{
     }// end of for loop
     
     console.log(realArr);
+}
+
+onkeydown = (e) => {
+    if(e.target!==$userNum){
+        setTimeout(()=>{
+            fadeOut()
+        },0); 
+    }
 }
 
 const fadeIn = (str)=>{
