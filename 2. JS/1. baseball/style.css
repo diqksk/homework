@@ -9,7 +9,6 @@
     padding:4%;
 }
 .subContainer{
-    display: flex;
     margin:20px;
     background: #f0f0f0;
     border-radius: 10px;
@@ -17,7 +16,7 @@
 }
 .subContainer > table{
     margin: 20px;
-    width: 40vw;
+    width: 30vw;
     border-collapse: collapse;
     text-align: center;
     font-weight: 600;
@@ -112,4 +111,11 @@ input:focus{
 .modeBtn> div:first-child{
     border-right: 1px solid #c3c3c3;
     background: #c3c3c3;
+}
+.vs{
+    align-items: center;
+}
+.match{
+    display: none;
+
 }

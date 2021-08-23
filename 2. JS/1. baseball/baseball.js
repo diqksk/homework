@@ -3,24 +3,47 @@ const $submitBtn = document.getElementById("submitBtn");
 const $generateBtn = document.getElementById("generateBtn");
 const $modalContainer = document.getElementById("modalContainer");
 const $soloBtn = document.getElementById("soloBtn");
-const $comBtn= document.getElementById("comBtn");
-const realArr=[];
+const $comBtn = document.getElementById("comBtn");
+const $match = document.querySelectorAll(".match");
+const realArr=[]; //유저가 맞춰야 할 숫자
+let userRealArr=[]; //컴퓨터가 맞춰야 할 숫자
 const userNumList=[];
 const comAnswer=[];
-const comTempAnswer=[...Array(10).keys()];
+const tenNums=[...Array(10).keys()];
+const allList=[];
+let copyList;
+for(let i1 in tenNums) // 완전 탐색
+    if(i1 != 0)
+        for(let i2 in tenNums){
+            if (i2 != i1)
+                for(i3 in tenNums)
+                    if(i3 != i1 && i3 != i2){
+                        allList.push([+i1,+i2,+i3]);
+                    }
+    }       
 let count;
 let flag = false;
-let selectedNum = "";
+let comFinalAnswer = [];
 
 
 $soloBtn.addEventListener("click",()=>{
     flag = false;
+    for(let i = 0 ; i < $match.length ; i++) {
+        $match[i].style.display="none";
+    }
+
+    document.body.style.background="white";
     $soloBtn.style.background="#c3c3c3";
     $comBtn.style.background="#f0f0f0";
 });
 
 $comBtn.addEventListener("click",()=>{
     flag = true;
+    for(let i = 0 ; i < $match.length ; i++) {
+        $match[i].style.display="block";
+    }
+    document.body.style.background="rgb(246 224 37)";
+    document.querySelector(".vs").style.display="flex";
     $comBtn.style.background="#c3c3c3";
     $soloBtn.style.background="#f0f0f0";
 
@@ -71,7 +94,7 @@ const generateNumber = ()=>{
         realArr.push(temArr.splice(ranIdx,1)[0]);
     }// end of for loop
     
-    console.log(realArr);
+    console.log("사용자가 맞춰야 할 정답->",realArr);
 }
 
 onkeydown = (e) => {
@@ -97,19 +120,24 @@ const fadeOut = ()=>{
 
 const startGame = ()=>{
     
-    if(flag === true){
-        $userNum.placeholder="설정할 3자리 숫자를 입력해주세요";
+    if(flag){
+        copyList=[...allList];
+        $userNum.placeholder="컴퓨터가 맞출 번호를 입력!";
     }
 
     document.getElementById("ranNum").style.display="none";
     document.getElementById("userNum").style.display="block";
     document.getElementById("resultList").innerHTML="";
+    document.getElementById("comResultList").innerHTML="";
     document.getElementById("counter").innerText="";
     document.getElementById("ballCounter").innerText="";
     
 }
 
-const restartGame = ()=>{
+const restartGame = (str)=>{
+    copyList = allList;
+    userRealArr=[];
+    fadeIn(str);
     document.getElementById("ranNum").style.display="block";
     document.getElementById("userNum").style.display="none";
 }
@@ -135,14 +163,17 @@ const judgeValues = ()=>{
         return;
     }
 
-    if(flag === true && selectedNum === ""){
-        selectedNum = $userNum.value;
+    if(flag === true && userRealArr.length === 0){
+        for(let i = 0; i < $userNum.value.length ; i++){
+            userRealArr.push(+$userNum.value[i]);
+        }
+
         $userNum.value="";
         $userNum.placeholder="3자리 숫자를 입력해 주세요";
         return;    
     }
 
-    calculateResult(strArr,result);
+    calculateResult(strArr,result,"user");
 
     userNumList.push($userNum.value);
 
@@ -162,47 +193,71 @@ const judgeValues = ()=>{
     
     count++
     if(result.strike===3){
-        fadeIn('게임에서 승리하셨습니다!🎉');
-        restartGame();
+        restartGame('게임에서 승리하셨습니다!🎉');
     }
-    else if(count>9){
-        fadeIn(`패배하셨습니다.. 정답은 ${realArr.join("")}입니다.`);
-        restartGame();
+    else if(count>9 && !flag){
+        restartGame(`패배하셨습니다.. 정답은 ${realArr.join("")}입니다.`);
     }
-
+    
     $userNum.value="";
-
-    judgeUserNumber();
+    
+    if(flag)
+    setTimeout(judgeUserNumber,1000);
 
 }
 
-const calculateResult = (numArr,result) =>{
+const calculateResult = (numArr,result,player) =>{
+    const temArr = player === "user" ? realArr : userRealArr ;
+
+    if(player==="computer"){
+        console.log("컴퓨터 맞춰야할 숫자",temArr);
+        console.log("가져온 숫자",numArr);
+    }
+
     for(let i = 0 ; i<numArr.length ; i++){     
-       
-        for(let j = 0 ; j < realArr.length ; j++){
-            if(numArr[i] === realArr[j])  i === j ? result.strike++ : result.ball++;
+
+        for(let j = 0 ; j < temArr.length ; j++){
+            
+            if(numArr[i] === temArr[j])  i === j ? result.strike++ : result.ball++;
         }// end of for loop
     }// end of for loop
 }
 
 const judgeUserNumber = () => {
-    const result = {strike:0,ball:0};
-    if(count === 2 ){
-        comAnswer.push([1,2,3]);
-    }
-    
-    calculateResult(comAnswer,result);
 
-    if(result.strike === 0 && result.ball === 0 ){
-        for(let i = 0 ; i < 3 ; i++){
-            comTempAnswer.splice(comTempAnswer.indexOf(comAnswer[comAnswer.length-1][i]));
-            console.log(comAnswer[comAnswer.length-1][i]);
+    const randomChoice = copyList[Math.ceil(Math.random()*copyList.length)-1]; // 모든 경우의 수 배열
+    const result = {strike:0, ball:0};
+    
+    calculateResult(randomChoice,result,"computer"); // strike ball여부 체크
+    
+    if(result.strike===3){
+        restartGame(`컴퓨터가 정답을 맞췄습니다! \n 당신의 정답은 ${realArr.join("")}입니다.`);
+    }
+
+    for(let a = 0 ; a < copyList.length ; a++){
+        let strNum=0;
+        let ballNum=0;
+
+        for (let b = 0 ; b < 3 ; b++){
+            for(let c = 0 ; c < 3 ; c++){
+                if (randomChoice[c] === copyList[a][b] && b === c) strNum++;
+                if (randomChoice[c] === copyList[a][b] && b !== c) ballNum++;
+            }
         }
+
+        if (strNum !== result.strike || ballNum !== result.ball) copyList.splice(a,1);
     }
-    
+    console.log(copyList);
 
-    console.log(result);
-    
-
-
+    document.getElementById("comResultList").innerHTML=
+    `<tr ${result.strike===3 && "style='background:#ffeb3b'"}>
+         <td>${count-1}</td>
+         <td>${randomChoice.join("")}</td>
+         <td>
+             <p>🔵Strike : ${result.strike}</p>
+             <p>🔴Ball : ${result.ball}</p>
+         </td>
+     </tr>` 
+     + document.getElementById("comResultList").innerHTML;
 }
+

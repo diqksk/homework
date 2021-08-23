@@ -45,26 +45,54 @@
                 </div>
             </div>
 
-            <div class="subContainer">
-                <table>
+            <div style="display: flex;">
+                <div class="subContainer">
+                    <h2 style="text-align: center; padding:10px;">
+                        User 🤔
+                    </h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>회차</th>
+                                <th>입력 숫자</th>
+                                <th>결과</th>
+                            </tr>
+                        </thead>
 
-                    <thead>
-                        <tr>
-                            <th>회차</th>
-                            <th>입력 숫자</th>
-                            <th>결과</th>
-                        </tr>
-                    </thead>
+                        <tbody id="resultList">
+                            <tr>
+                                <td colspan="3">Game Start를 눌러주세요!</td>
+                            </tr>
+                        </tbody>
 
-                    <tbody id="resultList">
-                        <tr>
-                            <td colspan="3">Game Start를 눌러주세요!</td>
-                        </tr>
-                    </tbody>
+                    </table>
+                </div>
+                <h3 class="match vs">
+                    vs
+                </h3>
+                <div class="subContainer match">
+                    <h2 style="text-align: center; padding:10px;">
+                        Computer 🤖
+                    </h2>
+                    <table>
 
-                </table>
+                        <thead>
+                            <tr>
+                                <th>회차</th>
+                                <th>입력 숫자</th>
+                                <th>결과</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="comResultList">
+                            <tr>
+                                <td colspan="3">Game Start를 눌러주세요!</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
             </div>
-
         </div>
     </div>
 
