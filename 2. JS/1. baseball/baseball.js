@@ -8,11 +8,13 @@ const $match = document.querySelectorAll(".match");
 const realArr=[]; //유저가 맞춰야 할 숫자
 let userRealArr=[]; //컴퓨터가 맞춰야 할 숫자
 const userNumList=[];
-const comAnswer=[];
 const tenNums=[...Array(10).keys()];
 const allList=[];
 let copyList;
-for(let i1 in tenNums) // 완전 탐색
+let count;
+let flag = false;
+
+for(let i1 in tenNums) // 완전 탐색을 통한 경우의 수 도출
     if(i1 != 0)
         for(let i2 in tenNums){
             if (i2 != i1)
@@ -20,13 +22,12 @@ for(let i1 in tenNums) // 완전 탐색
                     if(i3 != i1 && i3 != i2){
                         allList.push([+i1,+i2,+i3]);
                     }
-    }       
-let count;
-let flag = false;
-let comFinalAnswer = [];
+    }     
 
-
-$soloBtn.addEventListener("click",()=>{
+/**
+ * 혼자하기 버튼
+ */
+$soloBtn.addEventListener("click",()=>{ 
     flag = false;
     for(let i = 0 ; i < $match.length ; i++) {
         $match[i].style.display="none";
@@ -37,6 +38,9 @@ $soloBtn.addEventListener("click",()=>{
     $comBtn.style.background="#f0f0f0";
 });
 
+/**
+ * 컴퓨터와 하기 버튼
+ */
 $comBtn.addEventListener("click",()=>{
     flag = true;
     for(let i = 0 ; i < $match.length ; i++) {
@@ -49,6 +53,9 @@ $comBtn.addEventListener("click",()=>{
 
 });
 
+/**
+ * GameStart 버튼
+ */
 $generateBtn.addEventListener('click',()=>{
     count = 1;
     realArr.length=0;
@@ -58,6 +65,9 @@ $generateBtn.addEventListener('click',()=>{
     startGame();
 });
 
+/**
+ * 실시간 유저 인풋 유효성 검사
+ */
 $userNum.addEventListener("keydown",function(e){
     let key = e.keyCode;
     
@@ -69,20 +79,43 @@ $userNum.addEventListener("keydown",function(e){
     
 });
 
+/**
+ * 모달 클릭시 fadeOut
+ */
 $modalContainer.addEventListener("click",()=>{
     fadeOut();
 });
 
+/**
+ * 모달에서 아무 행동이나 해도 fadeOut
+ */
+onkeydown = (e) => {
+    if(e.target!==$userNum){
+        setTimeout(()=>{ //stack에 쌓이는 호출을 흘리기 위한 비동기 처리
+            fadeOut() 
+        },0); 
+    }
+}
+
+/**
+ * 사용자 입력정보 제출 버튼 클릭시 로직 수행
+ */
 $submitBtn.addEventListener("click",()=>{
     judgeValues();
 });
 
+/**
+ * 사용자 입력창에서 엔터시 제출 로직 수행
+ */
 $userNum.addEventListener("keydown",(e)=>{
     if(e.keyCode === 13){
         judgeValues();
     }
 })
 
+/**
+ * 중복되지 않는 3자리 난수 생성
+ */
 const generateNumber = ()=>{
     const temArr = [...Array(10).keys()];
 
@@ -97,14 +130,10 @@ const generateNumber = ()=>{
     console.log("사용자가 맞춰야 할 정답->",realArr);
 }
 
-onkeydown = (e) => {
-    if(e.target!==$userNum){
-        setTimeout(()=>{
-            fadeOut()
-        },0); 
-    }
-}
-
+/**
+ * 모달 fade on
+ * @param {string} str 
+ */
 const fadeIn = (str)=>{
     $userNum.blur();
     document.getElementById("warningText").innerText=str;
@@ -112,12 +141,18 @@ const fadeIn = (str)=>{
     $modalContainer.style.opacity="1";
 }
 
+/**
+ * 모달 fade out
+ */
 const fadeOut = ()=>{
     $modalContainer.style.visibility="hidden";
     $modalContainer.style.opacity="0";
     $userNum.focus();
 }
 
+/**
+ * 게임시작시 HTML 게임모드로 변경 및 경우의 수 초기화
+ */
 const startGame = ()=>{
     
     if(flag){
@@ -134,14 +169,22 @@ const startGame = ()=>{
     
 }
 
+/**
+ * 게임 패배 or 승리 시 모달팝업 및 HTML초기화
+ * @param {string}} str 
+ */
 const restartGame = (str)=>{
-    copyList = allList;
+    copyList = [...allList];
     userRealArr=[];
     fadeIn(str);
     document.getElementById("ranNum").style.display="block";
     document.getElementById("userNum").style.display="none";
 }
 
+/**
+ * 사용자의 제출값을 바탕으로 Strike, Ball 유무 검출
+ * @returns 올바르지 않은 Input 제출 시 경고 후 함수 종료
+ */
 const judgeValues = ()=>{
     const tempArr = $userNum.value.split("");
     const strArr = tempArr.map(i=>Number(i));
@@ -202,10 +245,16 @@ const judgeValues = ()=>{
     $userNum.value="";
     
     if(flag)
-    setTimeout(judgeUserNumber,1000);
+    setTimeout(judgeUserNumber,1000); //컴퓨터가 고민해보이기 위해서 넣은 Delay
 
 }
 
+/**
+ * strike / ball 여부를 판단해 result 객체를 참조해 연산
+ * @param {array} numArr 
+ * @param {object} result 
+ * @param {string} player 
+ */
 const calculateResult = (numArr,result,player) =>{
     const temArr = player === "user" ? realArr : userRealArr ;
 
@@ -223,6 +272,16 @@ const calculateResult = (numArr,result,player) =>{
     }// end of for loop
 }
 
+/**
+ * Computer 번호 추측 로직
+ * 
+ * 1. 0~9로 만들수 있는 3자리의 모든 경우의 수를 도출한다. (완전탐색)
+ * 2. 경우의 수 중 랜덤으로 값을 답변한다.
+ * 3. 계산된 Ball/Strike Count를 토대로 같은 Count가 아닌 경우의 수를 모두 제외한다.
+ * 4. 2 ~ 3을 정답을 맞출때 까지 반복
+ * 5. 정답을 맞추면 게임을 종료한다.
+ * 
+ */
 const judgeUserNumber = () => {
 
     const randomChoice = copyList[Math.ceil(Math.random()*copyList.length)-1]; // 모든 경우의 수 배열
