@@ -71,7 +71,11 @@ $generateBtn.addEventListener('click',()=>{
 $userNum.addEventListener("keydown",function(e){
     let key = e.key;
 
-    if(!(key>=0 && key<10 || key.includes("Arrow") || key === "Backspace" || key === "Enter") || key.trim().length === 0){ // 48~57이 ascii 0-9           
+    if(!( key>=0 && key<10 || key.includes("Arrow") ||  key === "Backspace" || key === "Enter" || 
+    (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 229) || //for key pad and mobile 
+    key.trim().length === 0) //spacebar
+    
+    { // 48~57이 ascii 0-9           
         fadeIn("숫자만 적을 수 있습니다.");
     }else if($userNum.value.length===0 && key===48){
         fadeIn("첫번째는 0이 올 수 없습니다.");
