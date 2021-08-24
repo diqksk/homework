@@ -1,4 +1,11 @@
 # 숫자야구
+
+### Solo모드
+![image](https://user-images.githubusercontent.com/77711238/130556008-ecd0a4be-e362-479f-8f33-3c9f0000193e.png)
+
+### Computer와 대결 모드
+![image](https://user-images.githubusercontent.com/77711238/130556034-46e47900-9c4e-44db-a364-232df901c28b.png)
+
 ## 설명
 - 3자리 중복되지 않는 숫자를 맞추는 게임입니다.
 - 상대가 정한 숫자를 추측해 정답을 유추합니다.
