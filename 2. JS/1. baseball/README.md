@@ -1,6 +1,6 @@
 # 숫자야구
 
-###링크
+### 링크
 ikaonigiri.com
 
 ### Solo모드
