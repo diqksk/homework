@@ -119,3 +119,25 @@ input:focus{
     display: none;
 
 }
+
+@media screen and (max-width: 500px) {
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .vs{
+        font-size: 0px;
+    }
+    .subContainer > table th{
+        padding-bottom:10px;
+        border-bottom: 2px solid;
+        font-size: 10px;
+    }
+    .subContainer > h2{
+        font-size:15px;
+    }
+    .subContainer > table{
+        font-size:10px;
+    }
+}

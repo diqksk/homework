@@ -69,9 +69,9 @@ $generateBtn.addEventListener('click',()=>{
  * 실시간 유저 인풋 유효성 검사
  */
 $userNum.addEventListener("keydown",function(e){
-    let key = e.keyCode;
-    
-    if((key>31 && key<48) || key>57){ // 48~57이 ascii 0-9           
+    let key = e.key;
+
+    if(!(key>=0 && key<10 || key.includes("Arrow") || key === "Backspace" || key === "Enter") || key.trim().length === 0){ // 48~57이 ascii 0-9           
         fadeIn("숫자만 적을 수 있습니다.");
     }else if($userNum.value.length===0 && key===48){
         fadeIn("첫번째는 0이 올 수 없습니다.");
