@@ -1,7 +1,7 @@
 # 숫자야구
 
 ### 링크
-ikaonigiri.com
+[Ika Onigiri](https://ikaonigiri.com/)
 
 ### Solo모드
 ![image](https://user-images.githubusercontent.com/77711238/130556008-ecd0a4be-e362-479f-8f33-3c9f0000193e.png)
