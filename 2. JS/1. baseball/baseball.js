@@ -70,7 +70,6 @@ $generateBtn.addEventListener('click',()=>{
  */
 $userNum.addEventListener("keydown",function(e){
     let key = e.key;
-    
     if(!( key>=0 && key<10 || key.includes("Arrow") ||  key === "Backspace" || key === "Enter" || 
     (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 229) || //for key pad and mobile 
     key.trim().length === 0) //spacebar
@@ -297,18 +296,34 @@ const judgeUserNumber = () => {
         restartGame(`컴퓨터가 정답을 맞췄습니다! \n 당신의 정답은 ${realArr.join("")}입니다.`);
     }
 
+
+
     for(let a = 0 ; a < copyList.length ; a++){
         let strNum=0;
         let ballNum=0;
+        let numFlag=false
 
+        NumberCount :
         for (let b = 0 ; b < 3 ; b++){
             for(let c = 0 ; c < 3 ; c++){
-                if (randomChoice[c] === copyList[a][b] && b === c) strNum++;
+
+                //컴퓨터가 말한 숫자의 c번째가 이번 경우의수와 자릿수와 값이 일치하면 스트라이크++ / 자릿수가 다르면 볼++
+                if (randomChoice[c] === copyList[a][b] && b === c) strNum++; 
                 if (randomChoice[c] === copyList[a][b] && b !== c) ballNum++;
+                
+                // 스트라이크 볼카운트가 0 - 0 이었을때 해당하는 숫자가 들어간 경우의수를 모두 제거
+                if(result.strike === 0 && result.ball === 0 && randomChoice[c] === copyList[a][b]) {
+                    numFlag= true;
+                    break NumberCount;
+                }
             }
         }
+        // 컴퓨터가 말한수와 이번에 가져온 경우의수의 Strike / ball 수가 일치하지 않는다면 경우의수 배열에서 제거
+        if (strNum !== result.strike || ballNum !== result.ball || numFlag === true) {
+            copyList.splice(a,1);
+            a--;
+        }
 
-        if (strNum !== result.strike || ballNum !== result.ball) copyList.splice(a,1);
     }
     console.log(copyList);
 
@@ -323,4 +338,5 @@ const judgeUserNumber = () => {
      </tr>` 
      + document.getElementById("comResultList").innerHTML;
 }
+
 
