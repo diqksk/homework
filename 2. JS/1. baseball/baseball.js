@@ -70,7 +70,7 @@ $generateBtn.addEventListener('click',()=>{
  */
 $userNum.addEventListener("keydown",function(e){
     let key = e.key;
-    document.getElementById("forCheck").innerText=`${e.code} / ${e.key} / ${e.keyCode} `;
+    document.getElementById("forCheck").innerText=`${e.which} `;
     if(!( key>=0 && key<10 || key.includes("Arrow") ||  key === "Backspace" || key === "Enter" || 
     (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 229) || //for key pad and mobile 
     key.trim().length === 0) //spacebar
