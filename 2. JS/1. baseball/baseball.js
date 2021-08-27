@@ -185,44 +185,57 @@ const restartGame = (str)=>{
 }
 
 /**
- * 사용자의 제출값을 바탕으로 Strike, Ball 유무 검출
- * @returns 올바르지 않은 Input 제출 시 경고 후 함수 종료
+ * 사용자 입력값을 제출시 판단해 유효성을 검증한다.
+ * @param {Array} strArr 
+ * @returns boolean
  */
-const judgeValues = ()=>{
-    const tempArr = $userNum.value.split("");
-    const strArr = tempArr.map(i=>Number(i));
-    const set = new Set(strArr);
-    const result = {strike:0,ball:0}
+const checkInput = (strArr)=>{
+    const numSize = new Set(strArr).size;
 
     if($userNum.value.length !== 3){
         fadeIn("3자리 숫자를 입력해 주세요.");
-        return;
+        return false;
     }
                    
-    if(set.size !== 3){
+    if(numSize !== 3){
         fadeIn("중복되지 않는 숫자를 입력해 주세요.");
-        return;
+        return false;
     }
 
     if(userNumList.includes($userNum.value)){
         fadeIn("이미 입력한 적 있는 숫자입니다.");
-        return;
+        return false;
     }
 
     if(flag === true && userRealArr.length === 0){
+
         for(let i = 0; i < $userNum.value.length ; i++){
             userRealArr.push(+$userNum.value[i]);
         }
 
         $userNum.value="";
         $userNum.placeholder="3자리 숫자를 입력해 주세요";
-        return;    
+        return false;    
     }
 
-    calculateResult(strArr,result,"user");
-
     userNumList.push($userNum.value);
+    return true;
+}
 
+/**
+ * 사용자의 제출값을 바탕으로 Strike, Ball 유무 검출
+ * @returns 올바르지 않은 Input 제출 시 경고 후 함수 종료
+ */
+const judgeValues = ()=>{
+    const tempArr = $userNum.value.split("");
+    const userNumArr = tempArr.map(i=>Number(i));
+    const inputFlag= checkInput(userNumArr);
+
+    if(!inputFlag){
+        return;
+    }
+    
+    const result = calculateResult(userNumArr,"user");
 
     document.getElementById("ballCounter").innerText=`🔵Strike : ${result.strike} / 🔴Ball : ${result.ball}`
     document.getElementById("counter").innerText=`${count}회차`
@@ -238,7 +251,8 @@ const judgeValues = ()=>{
                 + document.getElementById("resultList").innerHTML;
     
     count++
-    if(result.strike===3){
+
+    if(result.strike === 3){
         restartGame('게임에서 승리하셨습니다!🎉');
     }
     else if(count>9 && !flag){
@@ -258,8 +272,9 @@ const judgeValues = ()=>{
  * @param {object} result 
  * @param {string} player 
  */
-const calculateResult = (numArr,result,player) =>{
+const calculateResult = (numArr,player) =>{
     const temArr = player === "user" ? realArr : userRealArr ;
+    const result = {strike:0, ball:0};
 
     if(player==="computer"){
         console.log("컴퓨터 맞춰야할 숫자",temArr);
@@ -273,6 +288,7 @@ const calculateResult = (numArr,result,player) =>{
             if(numArr[i] === temArr[j])  i === j ? result.strike++ : result.ball++;
         }// end of for loop
     }// end of for loop
+    return result;
 }
 
 /**
@@ -288,15 +304,12 @@ const calculateResult = (numArr,result,player) =>{
 const judgeUserNumber = () => {
 
     const randomChoice = copyList[Math.ceil(Math.random()*copyList.length)-1]; // 모든 경우의 수 배열
-    const result = {strike:0, ball:0};
     
-    calculateResult(randomChoice,result,"computer"); // strike ball여부 체크
+    const result = calculateResult(randomChoice,"computer"); // strike ball여부 체크
     
     if(result.strike===3){
         restartGame(`컴퓨터가 정답을 맞췄습니다! \n 당신의 정답은 ${realArr.join("")}입니다.`);
     }
-
-
 
     for(let a = 0 ; a < copyList.length ; a++){
         let strNum=0;
@@ -325,7 +338,7 @@ const judgeUserNumber = () => {
         }
 
     }
-    console.log(copyList);
+    console.log("남은 경우의 수의 갯수:" + copyList.length);
 
     document.getElementById("comResultList").innerHTML=
     `<tr ${result.strike===3 && "style='background:#ffeb3b'"}>
