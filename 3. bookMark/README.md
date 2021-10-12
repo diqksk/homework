@@ -1,4 +1,8 @@
 # BookMark 1차 데이터베이스 모델링
+### ERD
+![image](https://user-images.githubusercontent.com/77711238/137019440-22cf73fa-8ecd-469c-8574-20786ebc9099.png)
+
+
 
 ## 설명
 
