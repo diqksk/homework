@@ -1,0 +1,3 @@
+# Singletone Pattern
+
+---
